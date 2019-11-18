@@ -15,7 +15,7 @@
         }
 
         .bg {
-            background-image: url("img/pic.jpeg");
+            background-image: url("img/pic2.jpg");
             height: 100%;
             background-position: center;
             background-repeat: no-repeat;
@@ -157,15 +157,25 @@
         const sEndfix = ['.com', '.com', '.org', '.tv', '.com', '.com', '.com', '.com', '.com', '.com', '.com', '.com', '.com', '.com', '.com', '.com', '.com', '.com'];
         const customs = ['https://drive.google.com', 'gd'];
 
+        const pictures = ["img/pic.jpeg", "img/pic2.jpg", "img/pic3.jpg", "img/pic4.gif", "img/pic5.gif", "img/pic6.gif", "img/pic7.gif", "img/pic8.gif", "img/pic9.gif"];
+
+        function chooseRandomImage() {
+            var rNum = Math.floor(Math.random() * pictures.length);
+
+            document.getElementById("picture").style.backgroundImage = "url("+ pictures[rNum] +")"; 
+        }
+
         window.addEventListener('load', function () {
 
             startTime();
+            chooseRandomImage();
 
             var shouldDirect = false;
             var gotoUrl = "google.com";
             var isShortcut = false;
             var toSearch = document.getElementById("searchInput");
             const ns = document.getElementById("nearest-suggestion");
+
 
             toSearch.addEventListener("input", (e) => {
 
@@ -214,11 +224,12 @@
                         window.location = 'http://www.google.com/search?q=' + escape(toSearch.value);
                 }
             })
+
         });
     </script>
 
 
-    <div class="bg">
+    <div id="picture" class="bg">
         <div class="bg-box">
             <div class="inputcontainer">
                 <input class="center-block" id="searchInput" autofocus="" autocomplete="off" spellcheck="false"
