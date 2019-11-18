@@ -1,0 +1,189 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>- simple search -</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        body,
+        html {
+            height: 100%;
+        }
+        .bg {
+            background-image: url("img/pic.jpeg");
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        #inputcontainer {
+            position: absolute;
+            width: 50vw;
+            height: 50vh;
+            top: 25vh;
+            left: 25vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input {
+            background: none;
+            width: 100%;
+            height: 10%;
+            color: white;
+            text-align: center;
+            font-size: 48pt;
+        }
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+        }
+        .center-block {
+            border: 0px solid;
+        }
+        .inputcontainer {
+            width: 100%;
+            position: fixed;
+            /*padding-top: 20%;*/
+        }
+        input[type="search"]::-webkit-search-decoration,
+        input[type="search"]::-webkit-search-cancel-button,
+        input[type="search"]::-webkit-search-results-button,
+        input[type="search"]::-webkit-search-results-decoration {
+            display: none;
+        }
+        .suggestion-border {
+            height: 15px;
+            width: 500px;
+            border-bottom: 1px solid white;
+            margin: auto;
+        }
+        .suggested-text-wrapper p {
+            width: 100%;
+            font-size: 30pt;
+            margin: auto;
+            color: rgba(255, 255, 255, .7);
+        }
+        #nearest-suggestion {
+            text-align: center;
+        }
+        .infobox {
+            position: absolute;
+            width: 145px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, .4);
+            bottom: 0;
+        }
+        .infobox-text {
+            font-family: 'Courier New', Courier, monospace;
+            color: white;
+            width: 150px;
+            padding-left: 3px;
+            font-size: 10pt;
+            margin-bottom: 0;
+        }
+        .infobox-text-header {
+            font-family: 'Courier New', Courier, monospace;
+            color: white;
+            width: 150px;
+            padding-left: 35px;
+            font-size: 10pt;
+            margin-bottom: 0;
+            font-weight: bold;
+        }
+        .bg-box {
+            position: absolute;
+            width: 100%;
+            height: 200px;
+            background-color: rgba(0, 0, 0, .4);
+            margin-top: 20%;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script type="text/javascript">
+        const suggested = ['youtube', 'facebook', '4chan', 'twitch', 'google', 'protonmail', 'gmail', 'andy10gbit', 'soundcloud', 'github'];
+        const sPrefix = ['https://www.', 'https://www.', 'http://', 'https://www.', 'https://www.', 'https://mail.', 'https://www.', 'https://server15.', 'https://', 'https://'];
+        const sEndfix = ['.com', '.com', '.org', '.tv', '.com', '.com', '.com', '.xyz', '.com', '.com'];
+        const customs = ['https://drive.google.com', 'gd'];
+        window.addEventListener('load', function () {
+            var shouldDirect = false;
+            var gotoUrl = "google.com";
+            var isShortcut = false;
+            var toSearch = document.getElementById("searchInput");
+            const ns = document.getElementById("nearest-suggestion");
+            toSearch.addEventListener("input", (e) => {
+                var currSearch = e.target.value.toLowerCase();
+                for (let j = 0; j < customs.length; j++) {
+                    const element = customs[j];
+                    if (element === currSearch) {
+                        ns.innerText = " " + customs[j - 1] + " ";
+                        shouldDirect = true;
+                        gotoUrl = customs[j - 1];
+                        isShortcut = true;
+                        break;
+                    }
+                    else {
+                        ns.innerText = "";
+                        shouldDirect = false;
+                        isShortcut = false;
+                    }
+                }
+                if (isShortcut)
+                    return;
+                for (let i = 0; i < suggested.length; i++) {
+                    const element = suggested[i];
+                    if (element.substring(0, currSearch.length).includes(currSearch) && currSearch != "") {
+                        ns.innerText = " " + element + " ";
+                        shouldDirect = true;
+                        gotoUrl = sPrefix[i] + element + sEndfix[i];
+                        break;
+                    }
+                    else {
+                        ns.innerText = "";
+                        shouldDirect = false;
+                    }
+                }
+            });
+            toSearch.addEventListener("keyup", function (event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    if (shouldDirect === true)
+                        window.location = gotoUrl;
+                    else
+                        window.location = 'http://www.google.com/search?q=' + escape(toSearch.value);
+                }
+            })
+        });
+    </script>
+
+
+    <div class="bg">
+        <div class="bg-box">
+            <div class="inputcontainer">
+                <input class="center-block" id="searchInput" autofocus="" autocomplete="off" spellcheck="false"
+                    autocapitalize="none" autocorrect="off">
+                <div class="suggestion-border"></div>
+                <div class="suggested-text-wrapper">
+                    <p id="nearest-suggestion"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="infobox">
+            <p class="infobox-text-header">shortcuts</p>
+            <p class="infobox-text">gd - google drive</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
